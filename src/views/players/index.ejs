@@ -10,7 +10,9 @@
                 <div class="sm:flex sm:items-center">
                     <div class="sm:flex-auto">
                         <h1 class="text-xl font-semibold text-white">Player</h1>
-                        <p class="mt-2 text-sm text-gray-300">A list of all the users in your account including their name, title, email and role.</p>
+                        <p class="mt-2 text-sm text-gray-300">
+                            A list of all the players in database including their name, club, position, goal and isCaption.
+                        </p>
                     </div>
                     <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
                         <button
@@ -413,7 +415,7 @@
                 .delete(`/players/${id}`)
                 .then((res) => {
                     console.log(res);
-                    toastify("Nation deleted successfully", "#198754");
+                    toastify("Player deleted successfully", "#198754");
                     setTimeout(() => {
                         location.reload();
                     }, 1000);
