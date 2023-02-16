@@ -1,7 +1,7 @@
 const express = require("express");
 const nationRouter = require("../routes/nationRouter");
 const playerRouter = require("../routes/playerRouter");
-const homeRouter = require("../controllers");
+const homeRouter = require("../routes/homeRouter");
 const mongoose = require("mongoose");
 
 module.exports = function (app) {

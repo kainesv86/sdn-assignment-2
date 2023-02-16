@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const playerSchema = new mongoose.Schema({
     name: {
@@ -21,10 +21,10 @@ const playerSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    isCaption: {
+    isCaptain: {
         type: Boolean,
         required: true,
     },
 });
 
-module.exports = mongoose.model('Player', playerSchema);
+module.exports = mongoose.model("Player", playerSchema);

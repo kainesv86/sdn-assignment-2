@@ -1,9 +1,443 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <%- include('./partial/head.ejs') %>
+        <%- include('../partial/head.ejs') %>
     </head>
     <body>
-        <%- include('./partial/navbar.ejs') %>
+        <%- include('../partial/navbar.ejs') %>
+        <div class="bg-gray-900 py-10 min-h-screen flex justify-center">
+            <div class="px-6 lg:px-8">
+                <div class="sm:flex sm:items-center">
+                    <div class="sm:flex-auto">
+                        <h1 class="text-xl font-semibold text-white">Player</h1>
+                        <p class="mt-2 text-sm text-gray-300">A list of all the users in your account including their name, title, email and role.</p>
+                    </div>
+                    <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+                        <button
+                            type="button"
+                            class="block rounded-md bg-indigo-500 py-1.5 px-3 text-center text-sm font-semibold leading-6 text-white hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                            onclick="toggleModal('add-modal')"
+                        >
+                            Add player
+                        </button>
+                    </div>
+                </div>
+                <div class="mt-8 flow-root">
+                    <div class="-my-2 -mx-6 overflow-x-auto lg:-mx-8">
+                        <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+                            <table class="min-w-full divide-y divide-gray-700">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="py-3.5 pl-6 pr-3 text-left text-sm font-semibold text-white sm:pl-0">Image</th>
+                                        <th scope="col" class="py-3.5 px-3 text-left text-sm font-semibold text-white">Name</th>
+                                        <th scope="col" class="py-3.5 px-3 text-left text-sm font-semibold text-white">Club</th>
+                                        <th scope="col" class="py-3.5 px-3 text-left text-sm font-semibold text-white">Position</th>
+                                        <th scope="col" class="py-3.5 px-3 text-left text-sm font-semibold text-white">Goal</th>
+                                        <th scope="col" class="py-3.5 px-3 text-left text-sm font-semibold text-white">Captain?</th>
+                                        <th scope="col" class="relative py-3.5 pl-3 pr-6 sm:pr-0">
+                                            <span class="sr-only">Edit</span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-800">
+                                    <% players.forEach((player,i) => { %>
+
+                                    <tr>
+                                        <td class="whitespace-nowrap py-4 pl-6 pr-3 text-sm font-medium text-white sm:pl-0">
+                                            <img src="<%= player.image %>" class="max-w-md" alt="<%= player.name %>" />
+                                        </td>
+                                        <td class="whitespace-nowrap py-4 px-3 text-sm text-gray-300"><%= player.name %></td>
+                                        <td class="whitespace-nowrap py-4 px-3 text-sm text-gray-300"><%= player.club %></td>
+                                        <td class="whitespace-nowrap py-4 px-3 text-sm text-gray-300"><%= player.position %></td>
+                                        <td class="whitespace-nowrap py-4 px-3 text-sm text-gray-300"><%= player.goal %></td>
+                                        <td class="whitespace-nowrap py-4 px-3 text-sm text-gray-300"><%= player.isCaptain %></td>
+                                        <td class="whitespace-nowrap py-4 px-3 text-sm text-gray-300 flex gap-2 h-full">
+                                            <button
+                                                type="button"
+                                                class="block rounded-md bg-indigo-500 py-1.5 px-3 text-center text-sm font-semibold leading-6 text-white hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                                                onclick="toggleUpdateModal('update-modal', '<%= player.id %>')"
+                                            >
+                                                Edit
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onclick="deletePlayer('<%= player.id %>')"
+                                                class="block rounded-md bg-red-500 py-1.5 px-3 text-center text-sm font-semibold leading-6 text-white hover:bg-red-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500"
+                                            >
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <% }); %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add modal here -->
+        <div id="add-modal" class="hidden">
+            <form class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+                <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+                <div class="fixed inset-0 z-10 overflow-y-auto">
+                    <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                        <div
+                            class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6"
+                        >
+                            <div>
+                                <div class="mt-3 text-center sm:mt-5">
+                                    <h3 class="text-lg font-medium leading-6 text-gray-900" id="modal-title">Add player</h3>
+                                    <div class="mt-2 flex flex-col gap-2">
+                                        <div class="flex align-start w-full flex-col text-start">
+                                            <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+                                            <div class="mt-1">
+                                                <input
+                                                    type="text"
+                                                    name="name"
+                                                    id="name"
+                                                    class="block w-full py-2 px-4 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                                    placeholder="M3P"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div class="flex align-start w-full flex-col text-start">
+                                            <label for="image" class="block text-sm font-medium text-gray-700">Image</label>
+                                            <div class="mt-1">
+                                                <input
+                                                    type="text"
+                                                    name="image"
+                                                    id="image"
+                                                    class="block w-full py-2 px-4 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                                    placeholder="Image Url"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div class="flex align-start w-full flex-col text-start">
+                                            <label for="club" class="block text-sm font-medium text-gray-700">Club</label>
+                                            <select
+                                                id="club"
+                                                name="club"
+                                                class="mt-1 block w-full border rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                            >
+                                                <% clubs.forEach((club,i) => { %>
+                                                <option><%= club%></option>
+                                                <% }); %>
+                                            </select>
+                                        </div>
+                                        <div class="flex align-start w-full flex-col text-start">
+                                            <label for="position" class="block text-sm font-medium text-gray-700">Position</label>
+                                            <select
+                                                id="position"
+                                                name="position"
+                                                class="mt-1 block w-full border rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                            >
+                                                <% positions.forEach((position,i) => { %>
+                                                <option><%= position%></option>
+                                                <% }); %>
+                                            </select>
+                                        </div>
+                                        <div class="flex align-start w-full flex-col text-start">
+                                            <label for="goal" class="block text-sm font-medium text-gray-700">Goal</label>
+                                            <div class="mt-1">
+                                                <input
+                                                    type="number"
+                                                    name="goal"
+                                                    id="goal"
+                                                    class="block w-full py-2 px-4 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                                    placeholder="12"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div class="flex align-start w-full flex-col text-start">
+                                            <label for="isCaptain" class="block text-sm font-medium text-gray-700">Captain?</label>
+                                            <select
+                                                id="isCaptain"
+                                                name="isCaptain"
+                                                class="mt-1 block w-full border rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                            >
+                                                <option value="true">Yes</option>
+                                                <option value="false">No</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-5 sm:mt-6 flex gap-2">
+                                <button
+                                    type="button"
+                                    class="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm"
+                                    onclick="postPlayer()"
+                                >
+                                    Add player
+                                </button>
+                                <button
+                                    type="button"
+                                    class="inline-flex w-full justify-center rounded-md border border-transparent bg-red-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 sm:text-sm"
+                                    onclick="toggleModal('add-modal')"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Update player modal here -->
+
+        <div id="update-modal" class="hidden">
+            <form class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+                <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+                <div class="fixed inset-0 z-10 overflow-y-auto">
+                    <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                        <div
+                            class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6"
+                        >
+                            <div>
+                                <div class="mt-3 text-center sm:mt-5">
+                                    <h3 class="text-lg font-medium leading-6 text-gray-900" id="modal-title">Update player</h3>
+                                    <input id="uId" class="hidden" />
+                                    <div class="mt-2 flex flex-col gap-2">
+                                        <div class="flex align-start w-full flex-col text-start">
+                                            <label for="uName" class="block text-sm font-medium text-gray-700">Name</label>
+                                            <div class="mt-1">
+                                                <input
+                                                    type="text"
+                                                    name="uName"
+                                                    id="uName"
+                                                    class="block w-full py-2 px-4 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                                    placeholder="M3P"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div class="flex align-start w-full flex-col text-start">
+                                            <label for="uImage" class="block text-sm font-medium text-gray-700">Image</label>
+                                            <div class="mt-1">
+                                                <input
+                                                    type="text"
+                                                    name="uImage"
+                                                    id="uImage"
+                                                    class="block w-full py-2 px-4 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                                    placeholder="Image Url"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div class="flex align-start w-full flex-col text-start">
+                                            <label for="uClub" class="block text-sm font-medium text-gray-700">Club</label>
+                                            <select
+                                                id="uClub"
+                                                name="uClub"
+                                                class="mt-1 block w-full border rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                            >
+                                                <% clubs.forEach((club,i) => { %>
+                                                <option><%= club%></option>
+                                                <% }); %>
+                                            </select>
+                                        </div>
+                                        <div class="flex align-start w-full flex-col text-start">
+                                            <label for="uPosition" class="block text-sm font-medium text-gray-700">Position</label>
+                                            <select
+                                                id="uPosition"
+                                                name="uPosition"
+                                                class="mt-1 block w-full border rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                            >
+                                                <% positions.forEach((position,i) => { %>
+                                                <option><%= position%></option>
+                                                <% }); %>
+                                            </select>
+                                        </div>
+                                        <div class="flex align-start w-full flex-col text-start">
+                                            <label for="uGoal" class="block text-sm font-medium text-gray-700">Goal</label>
+                                            <div class="mt-1">
+                                                <input
+                                                    type="number"
+                                                    name="uGoal"
+                                                    id="uGoal"
+                                                    class="block w-full py-2 px-4 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                                    placeholder="12"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div class="flex align-start w-full flex-col text-start">
+                                            <label for="uIsCaptain" class="block text-sm font-medium text-gray-700">Captain?</label>
+                                            <select
+                                                id="uIsCaptain"
+                                                name="uIsCaptain"
+                                                class="mt-1 block w-full border rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                            >
+                                                <option value="true">Yes</option>
+                                                <option value="false">No</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-5 sm:mt-6 flex gap-2">
+                                <button
+                                    type="button"
+                                    class="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm"
+                                    onclick="putPlayer()"
+                                >
+                                    Update player
+                                </button>
+                                <button
+                                    type="button"
+                                    class="inline-flex w-full justify-center rounded-md border border-transparent bg-red-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 sm:text-sm"
+                                    onclick="toggleModal('update-modal')"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
     </body>
+
+    <script>
+        const toggleModal = (id) => {
+            const modal = document.getElementById(id);
+            if (modal.classList.contains("hidden")) {
+                modal.classList.remove("hidden");
+            } else {
+                modal.classList.add("hidden");
+            }
+        };
+
+        const toggleUpdateModal = (id, playerId) => {
+            const modal = document.getElementById(id);
+            if (modal.classList.contains("hidden")) {
+                modal.classList.remove("hidden");
+            } else {
+                modal.classList.add("hidden");
+            }
+
+            axios
+                .get(`/players/${playerId}`)
+                .then((res) => {
+                    console.log(res);
+                    const { name, club, image, position, goal, isCaptain } = res.data;
+                    document.getElementById("uName").value = name || "";
+                    document.getElementById("uClub").value = club || "";
+                    document.getElementById("uImage").value = image || "";
+                    changeIt("uPosition", position || "GK");
+                    changeIt("uGoal", goal || 0);
+                    changeIt("uIsCaptain", isCaptain.toString() || "true");
+                    document.getElementById("uId").value = playerId;
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        };
+
+        function changeIt(mySelect, temp) {
+            $(`#${mySelect}`).val(temp);
+        }
+
+        const postPlayer = () => {
+            const name = document.getElementById("name").value;
+            const club = document.getElementById("club").value;
+            const position = document.getElementById("position").value;
+            const goal = document.getElementById("goal").value;
+            const isCaptain = document.getElementById("isCaptain").value;
+            const image = document.getElementById("image").value;
+
+            const data = {
+                name,
+                image,
+                position,
+                goal,
+                club,
+                isCaptain: isCaptain === "true" ? true : false,
+            };
+
+            axios
+                .post("/players", data)
+                .then((res) => {
+                    console.log(res);
+                    toastify("Player added successfully", "#198754");
+                    toggleModal("add-modal");
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        };
+
+        const putPlayer = () => {
+            const id = document.getElementById("uId").value;
+            const name = document.getElementById("uName").value;
+            const club = document.getElementById("uClub").value;
+            const position = document.getElementById("uPosition").value;
+            const goal = document.getElementById("uGoal").value;
+            const isCaptain = document.getElementById("uIsCaptain").value;
+            const image = document.getElementById("uImage").value;
+
+            const data = {
+                name,
+                image,
+                position,
+                goal,
+                club,
+                isCaptain: isCaptain === "true" ? true : false,
+            };
+
+            console.log(data);
+
+            axios
+                .put(`/players/${id}`, data)
+                .then((res) => {
+                    console.log(res);
+                    toastify("Player updated successfully", "#198754");
+                    toggleModal("update-modal");
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        };
+
+        const deletePlayer = (id) => {
+            const isDelete = confirm("Are you sure you want to delete this player?");
+            if (!isDelete) return;
+
+            axios
+                .delete(`/players/${id}`)
+                .then((res) => {
+                    console.log(res);
+                    toastify("Nation deleted successfully", "#198754");
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        };
+
+        const toastify = (message, color) => {
+            Toastify({
+                text: message,
+                duration: 3000,
+                destination: "https://github.com/apvarun/toastify-js",
+                newWindow: true,
+                close: true,
+                gravity: "top",
+                position: "right",
+                stopOnFocus: true,
+                style: {
+                    background: color,
+                },
+                onClick: function () {}, // Callback after click
+            }).showToast();
+        };
+    </script>
 </html>

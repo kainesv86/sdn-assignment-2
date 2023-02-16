@@ -7,13 +7,35 @@ playerRouter.use(bodyParser.json());
 
 playerRouter.route("/").all((req, res, next) => {
     res.statusCode = 200;
-    res.setHeader("Content-Type", "application/json");
     next();
 });
 
 playerRouter.get("/", async (req, res, next) => {
     const players = await Players.find();
-    res.render("index", { title: "Hello" });
+    const positions = ["GK", "RB", "CB", "LB", "CDM", "CM", "CAM", "RW", "LW", "ST"];
+    const clubs = [
+        "MU",
+        "MC",
+        "LFC",
+        "CHE",
+        "ARS",
+        "TOT",
+        "AVL",
+        "WHU",
+        "LEI",
+        "EVE",
+        "WOL",
+        "SOU",
+        "NEW",
+        "CRY",
+        "BHA",
+        "BUR",
+        "SHU",
+        "LEE",
+        "WBA",
+        "NOR",
+    ];
+    res.render("players/index", { title: "Players", players, positions, clubs });
 });
 
 playerRouter.get("/:playerId", async (req, res, next) => {

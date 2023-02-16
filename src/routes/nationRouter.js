@@ -6,11 +6,10 @@ const nationRouter = express.Router();
 
 nationRouter.use(bodyParser.json());
 
-// nationRouter.route("/").all((req, res, next) => {
-//     res.statusCode = 200;
-//     res.setHeader("Content-Type", "application/json");
-//     next();
-// });
+nationRouter.route("/").all((req, res, next) => {
+    res.statusCode = 200;
+    next();
+});
 
 nationRouter.get("/", async (_, res, next) => {
     const nations = await Nations.find();
