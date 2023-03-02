@@ -17,8 +17,12 @@ nationRouter.get("/", async (_, res, next) => {
 });
 
 nationRouter.get("/:nationId", async (req, res, next) => {
-    const nation = await Nations.findById(req.params.nationId);
-    res.send(nation);
+    try {
+        const nation = await Nations.findById(req.params.nationId);
+        res.send(nation);
+    } catch (err) {
+        res.status(404).send("Not found");
+    }
 });
 
 nationRouter.post("/", async (req, res, next) => {

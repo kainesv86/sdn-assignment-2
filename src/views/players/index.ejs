@@ -56,7 +56,9 @@
                                         <td class="whitespace-nowrap py-4 px-3 text-sm text-gray-300"><%= player.position %></td>
                                         <td class="whitespace-nowrap py-4 px-3 text-sm text-gray-300"><%= player.goal %></td>
                                         <td class="whitespace-nowrap py-4 px-3 text-sm text-gray-300"><%= player.isCaptain %></td>
-                                        <td class="whitespace-nowrap py-4 px-3 text-sm text-gray-300"><%= player.nations.name %></td>
+                                        <td class="whitespace-nowrap py-4 px-3 text-sm text-gray-300">
+                                            <%= player.nations ? player.nations.name : "" %>
+                                        </td>
                                         <td class="whitespace-nowrap py-4 px-3 text-sm text-gray-300">
                                             <% if (isLogin && user.isAdmin) { %>
                                             <div class="flex gap-2 h-full">
@@ -156,6 +158,7 @@
                                             <select
                                                 id="nations"
                                                 name="nations"
+                                                required
                                                 class="mt-1 block w-full border rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                                             >
                                                 <% nations.forEach((nation,i) => { %>
@@ -297,6 +300,7 @@
                                             <select
                                                 id="nations"
                                                 name="nations"
+                                                required
                                                 class="mt-1 block w-full border rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                                             >
                                                 <% nations.forEach((nation,i) => { %>
@@ -310,6 +314,7 @@
                                                 <input
                                                     type="checkbox"
                                                     name="isCaptain"
+                                                    value="true"
                                                     id="isCaptain"
                                                     class="block py-2 px-4 h-4 w-4 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                                     placeholder="12"
@@ -431,9 +436,9 @@
                     data[item.name] = item.value;
                 });
 
-                console.log(data);
+                const { id, isCaptain, ...others } = data;
 
-                const { id, ...others } = data;
+                Boolean(isCaptain) ? (others.isCaptain = true) : (others.isCaptain = false);
 
                 axios
                     .put(`/players/${id}`, others)

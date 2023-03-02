@@ -12,7 +12,13 @@ playerRouter.route("/").all((req, res, next) => {
 });
 
 playerRouter.get("/", async (req, res) => {
-    const players = await Players.find().populate("nations");
+    let players = [];
+
+    if (res.locals.isLogin && res.locals.user.isAdmin) {
+        players = await Players.find().populate("nations");
+    } else {
+        players = await Players.find({ isCaptain: true }).populate("nations");
+    }
 
     const positions = ["GK", "RB", "CB", "LB", "CDM", "CM", "CAM", "RW", "LW", "ST"];
     const clubs = [
@@ -44,8 +50,12 @@ playerRouter.get("/", async (req, res) => {
 });
 
 playerRouter.get("/:playerId", async (req, res, next) => {
-    const player = await Players.findById(req.params.playerId);
-    res.send(player);
+    try {
+        const player = await Players.findById(req.params.playerId);
+        res.send(player);
+    } catch (err) {
+        res.status(404).send("Not found");
+    }
 });
 
 playerRouter.post("/", async (req, res, next) => {

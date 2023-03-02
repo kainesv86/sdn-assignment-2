@@ -18,8 +18,12 @@ usersRouter.get("/", routeAdminProtection, async (req, res) => {
 });
 
 usersRouter.get("/:id", routeAdminProtection, async (req, res) => {
-    const user = await Users.findById(req.params.id);
-    res.render("users/detail", { title: "User detail", account: user });
+    try {
+        const user = await Users.findById(req.params.id);
+        res.render("users/detail", { title: "User detail", account: user });
+    } catch (err) {
+        res.status(404).send("Not found");
+    }
 });
 
 module.exports = usersRouter;
