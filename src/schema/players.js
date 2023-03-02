@@ -20,11 +20,17 @@ const playerSchema = new mongoose.Schema({
     goal: {
         type: Number,
         required: true,
+        default: 0,
     },
     isCaptain: {
         type: Boolean,
-        required: true,
+        default: false,
+    },
+    nations: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "nations",
+        require: true,
     },
 });
 
-module.exports = mongoose.model("Player", playerSchema);
+module.exports = mongoose.model("players", playerSchema);

@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const Players = require("../schema/players");
+const Nations = require("../schema/nations");
 const playerRouter = express.Router();
 
 playerRouter.use(bodyParser.json());
@@ -10,8 +11,9 @@ playerRouter.route("/").all((req, res, next) => {
     next();
 });
 
-playerRouter.get("/", async (req, res, next) => {
-    const players = await Players.find();
+playerRouter.get("/", async (req, res) => {
+    const players = await Players.find().populate("nations");
+
     const positions = ["GK", "RB", "CB", "LB", "CDM", "CM", "CAM", "RW", "LW", "ST"];
     const clubs = [
         "MU",
@@ -35,7 +37,10 @@ playerRouter.get("/", async (req, res, next) => {
         "WBA",
         "NOR",
     ];
-    res.render("players/index", { title: "Players", players, positions, clubs });
+
+    const nations = await Nations.find();
+
+    res.render("players/index", { title: "Players", players, positions, clubs, nations });
 });
 
 playerRouter.get("/:playerId", async (req, res, next) => {

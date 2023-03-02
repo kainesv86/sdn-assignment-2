@@ -65,7 +65,59 @@
                             id="players-link"
                             >Players</a
                         >
+
+                        <% if (isLogin && user.isAdmin) { %>
+                        <a
+                            href="/accounts"
+                            class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                            id="players-link"
+                            >Users</a
+                        >
+                        <% } %>
                     </div>
+                </div>
+            </div>
+            <div class="relative ml-3">
+                <div class="flex gap-4 items-center">
+                    <% if (isLogin) { %>
+                    <p class="text-white text-base text-lg"><%= user.name%></p>
+                    <button
+                        type="button"
+                        class="flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        id="user-menu-button"
+                        aria-expanded="false"
+                        aria-haspopup="true"
+                    >
+                        <span class="sr-only">Open user menu</span>
+                        <img
+                            class="h-8 w-8 rounded-full"
+                            src="https://ui-avatars.com/api/?name=<%=user.name%>&background=0D8ABC&color=fff&size=32"
+                            alt=""
+                        />
+                    </button>
+                    <% } else { %>
+                    <a href="/auth/login" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Login</a>
+                    <% } %>
+                </div>
+
+                <div
+                    class="absolute hidden right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                    role="menu"
+                    id="profile"
+                    aria-orientation="vertical"
+                    aria-labelledby="user-menu-button"
+                    tabindex="-1"
+                >
+                    <!-- Active: "bg-gray-100", Not Active: "" -->
+                    <a href="/user/me" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-0"
+                        >Your Profile</a
+                    >
+                    <a href="/user/change-password" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-0"
+                        >Change Password</a
+                    >
+                    <a href="/auth/logout" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-2"
+                        >Sign out</a
+                    >
                 </div>
             </div>
         </div>
@@ -85,6 +137,10 @@
                 setCurrentLink("#home-link");
                 break;
         }
+    });
+
+    $(document).on("click", "#user-menu-button", function () {
+        $("#profile").toggle().toggleClass("hidden");
     });
 
     const setCurrentLink = (id) => {

@@ -27,7 +27,6 @@ nationRouter.post("/", async (req, res, next) => {
 });
 
 nationRouter.put("/:nationId", async (req, res, next) => {
-    console.log(req.params.nationId);
     const nation = await Nations.findByIdAndUpdate(
         req.params.nationId,
         {
